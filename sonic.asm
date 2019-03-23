@@ -8806,7 +8806,7 @@ Nem_Explode:	incbin	"artnem\Explosion.bin"
 		even
 Nem_Points:	incbin	"artnem\Points.bin"	; points from destroyed enemy or object
 		even
-Nem_GameOver:	incbin	"artnem\Game Over.bin"	; game over / time over
+Nem_GameOver:	incbin	"artnem\gitgud.bin"	; game over / time over
 		even
 Nem_HSpring:	incbin	"artnem\Spring Horizontal.bin"
 		even

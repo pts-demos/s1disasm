@@ -1,0 +1,28 @@
+{
+    "description": "Flex 2 Project File",
+    "name": "s1disasm",
+    "objects": [
+        {
+            "name": "gitgud",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\gitgud.bin",
+                "compression": "Nemesis"
+            },
+            "mappings": {
+                "path": "_maps\\Game Over.asm",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": "git_gud",
+                "accessor": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": ""
+            }
+        }
+    ]
+}
