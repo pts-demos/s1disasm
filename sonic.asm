@@ -2048,6 +2048,10 @@ GM_Sega:
 		ori.b	#$40,d0
 		move.w	d0,(vdp_control_port).l
 
+Sega_GotoTitle:
+		move.b	#id_Title,(v_gamemode).w ; go to title screen
+		rts
+
 Sega_WaitPal:
 		move.b	#2,(v_vbla_routine).w
 		bsr.w	WaitForVBla
@@ -2067,9 +2071,6 @@ Sega_WaitEnd:
 		andi.b	#btnStart,(v_jpadpress1).w ; is Start button pressed?
 		beq.s	Sega_WaitEnd	; if not, branch
 
-Sega_GotoTitle:
-		move.b	#id_Title,(v_gamemode).w ; go to title screen
-		rts	
 ; ===========================================================================
 
 ; ---------------------------------------------------------------------------
