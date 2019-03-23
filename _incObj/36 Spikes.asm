@@ -75,8 +75,9 @@ Spik_Upright:
 		bsr.w	SolidObject
 		btst	#3,obStatus(a0)
 		bne.s	Spik_Hurt
-		tst.w	d4
-		bpl.s	Spik_Display
+		cmpi.w	#1,d4
+		beq.s	Spik_Hurt
+		bra.s	Spik_Display
 
 Spik_Hurt:
 		tst.b	(v_invinc).w	; is Sonic invincible?
