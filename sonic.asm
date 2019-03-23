@@ -2125,10 +2125,10 @@ GM_Title:
 
 		moveq	#palid_Sonic,d0	; load Sonic's palette
 		bsr.w	PalLoad1
-		move.b	#id_CreditsText,(v_objspace+$80).w ; load "SONIC TEAM PRESENTS" object
-		jsr	(ExecuteObjects).l
-		jsr	(BuildSprites).l
-		bsr.w	PaletteFadeIn
+		;move.b	#id_CreditsText,(v_objspace+$80).w ; load "SONIC TEAM PRESENTS" object
+		;jsr	(ExecuteObjects).l
+		;jsr	(BuildSprites).l
+		;bsr.w	PaletteFadeIn
 		disable_ints
 		locVRAM	$4000
 		lea	(Nem_TitleFg).l,a0 ; load title	screen patterns
