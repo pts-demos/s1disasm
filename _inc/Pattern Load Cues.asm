@@ -40,6 +40,8 @@ ptr_PLC_TryAgain:	dc.w PLC_TryAgain-ArtLoadCues
 ptr_PLC_EggmanSBZ2:	dc.w PLC_EggmanSBZ2-ArtLoadCues
 ptr_PLC_FZBoss:		dc.w PLC_FZBoss-ArtLoadCues
 
+ptr_PLC_Beer:		dc.w PLC_Beer-ArtLoadCues
+
 plcm:	macro gfx,vram
 	dc.l gfx
 	dc.w vram
@@ -389,6 +391,10 @@ PLC_FZBoss:	dc.w ((PLC_FZBossend-PLC_FZBoss-2)/6)-1
 		plcm	Nem_Sbz2Eggman, $8E00	; Eggman without ship
 		plcm	Nem_Exhaust, $A540	; exhaust flame
 	PLC_FZBossend:
+
+PLC_Beer:	dc.w ((PLC_Beerend-PLC_Beer-2)/6)-1
+		plcm	Nem_Beer, $B000
+	PLC_Beerend:
 		even
 
 ; ---------------------------------------------------------------------------
@@ -426,3 +432,4 @@ plcid_Ending:		equ (ptr_PLC_Ending-ArtLoadCues)/2	; $1C
 plcid_TryAgain:		equ (ptr_PLC_TryAgain-ArtLoadCues)/2	; $1D
 plcid_EggmanSBZ2:	equ (ptr_PLC_EggmanSBZ2-ArtLoadCues)/2	; $1E
 plcid_FZBoss:		equ (ptr_PLC_FZBoss-ArtLoadCues)/2	; $1F
+plcid_Beer:		equ (ptr_PLC_Beer-ArtLoadCues)/2	; $20

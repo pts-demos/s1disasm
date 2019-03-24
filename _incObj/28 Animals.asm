@@ -22,6 +22,9 @@ Anml_Index:	dc.w Anml_Ending-Anml_Index, loc_912A-Anml_Index
 
 Anml_VarIndex:	dc.b 0,	5, 2, 3, 6, 3, 4, 5, 4,	1, 0, 1
 
+Beer_Variables:	dc.w $FE00, $FC00
+		dc.l Map_Beer
+
 Anml_Variables:	dc.w $FE00, $FC00
 		dc.l Map_Animal1
 		dc.w $FE00, $FD00	; horizontal speed, vertical speed
@@ -76,7 +79,14 @@ Anml_Ending:	; Routine 0
 
 Anml_FromEnemy:
 		addq.b	#2,obRoutine(a0)
-		bsr.w	RandomNumber
+		moveq	#0,d0
+		moveq	#0,d1
+
+		lea	Beer_Variables,a1	; initialize a1 with Beer map ...
+		moveq	#0,d0
+		tst.b	(f_lockctrl).w		; but if controls are not locked ...
+		bne.s	@skipload
+		bsr.w	RandomNumber		; replace it with random animal map
 		andi.w	#1,d0
 		moveq	#0,d1
 		move.b	(v_zone).w,d1
@@ -87,6 +97,7 @@ Anml_FromEnemy:
 		move.b	d0,$30(a0)
 		lsl.w	#3,d0
 		lea	Anml_Variables(pc),a1
+@skipload:
 		adda.w	d0,a1
 		move.w	(a1)+,$32(a0)	; load horizontal speed
 		move.w	(a1)+,$34(a0)	; load vertical	speed
@@ -97,6 +108,10 @@ Anml_FromEnemy:
 		move.w	#$592,obGfx(a0)	; VRAM setting for 2nd animal
 
 loc_90C0:
+		tst.b	(f_lockctrl).w		; if controls are not locked
+		beq.s	@no_palswap		; then keep original palette
+		ori.w	#$2000,obGfx(a0)	; else choose palette line 1
+@no_palswap:
 		move.b	#$C,obHeight(a0)
 		move.b	#4,obRender(a0)
 		bset	#0,obRender(a0)

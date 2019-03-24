@@ -93,7 +93,11 @@ Pri_Switched:	; Routine 4
 		clr.b	(f_timecount).w	; stop time counter
 		clr.b	(f_lockscreen).w ; lock screen position
 		move.b	#1,(f_lockctrl).w ; lock controls
-		move.w	#(btnR<<8),(v_jpadhold2).w ; make Sonic run to the right
+		clr.w	(v_jpadhold2).w		; clear buttons state
+		clr.w	(v_player+obVelX).w	; and zero player velocity
+		move.b	(v_zone).w,d0
+		addi.w	#plcid_Beer,d0
+		jsr	(AddPLC).l		; load beer sprite in place of animal1
 		clr.b	ob2ndRout(a0)
 		bclr	#3,(v_player+obStatus).w
 		bset	#1,(v_player+obStatus).w

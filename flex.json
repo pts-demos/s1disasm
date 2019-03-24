@@ -23,6 +23,28 @@
                 "customDefinition": "",
                 "label": ""
             }
+        },
+        {
+            "name": "beer",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\beer.bin",
+                "compression": "Nemesis",
+                "accessor": ""
+            },
+            "mappings": {
+                "path": "_maps\\beer.asm",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": "beermap"
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": ""
+            }
         }
     ]
 }
