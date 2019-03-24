@@ -22,16 +22,36 @@ loc_17916:
 		bra.w	loc_177E6
 ; ===========================================================================
 
+BGHZ_ship_vertical_velocity:
+		cmpi.w	#$0,d0
+		beq.s	@initial_vel	; start moving if not moving
+		cmpi.w  #$30b,d1
+		ble.s	@negate_y_vel	; reverse direction if too high
+		cmpi.w	#$390,d1
+		bge.s	@negate_y_vel	; reverse direction if too low
+		rts
+@initial_vel:
+		move.w	#$90,d0
+		rts
+@negate_y_vel:
+		neg.w	d0
+		rts
 BGHZ_ShipMove:
-		subq.w	#1,$3C(a0)
-		bpl.s	BGHZ_Reverse
+		subq.w	#1,$3C(a0)	; moved enough frames?
+		bpl.s	BGHZ_Reverse	; if so, reverse direction
 		addq.b	#2,ob2ndRout(a0)
-		move.w	#$3F,$3C(a0)
-		move.w	#$100,obVelX(a0) ; move the ship sideways
-		cmpi.w	#$2A00,$30(a0)
+		move.w	#$50,$3C(a0)	; reset frame counter
+
+		move.w	obVelY(a0),d0
+		move.w	obY(a0),d1
+		bsr.s	BGHZ_ship_vertical_velocity
+		move.w	d0,obVelY(a0)
+
+		move.w	#$300,obVelX(a0) ; move the ship sideways
+		cmpi.w	#$2A00,$30(a0)	; no idea what this check is...
 		bne.s	BGHZ_Reverse
-		move.w	#$7F,$3C(a0)
-		move.w	#$40,obVelX(a0)
+		move.w	#$3F,$3C(a0)	; move for this many frames
+		move.w	#$200,obVelX(a0)
 
 BGHZ_Reverse:
 		btst	#0,obStatus(a0)
@@ -59,7 +79,7 @@ loc_17976:
 		bra.w	loc_177E6
 ; ===========================================================================
 
-loc_1797A:
+BGHZ_Damaged:
 		subq.w	#1,$3C(a0)
 		bmi.s	loc_17984
 		bra.w	BossDefeated
