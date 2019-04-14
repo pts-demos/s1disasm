@@ -2860,8 +2860,13 @@ Level_GetBgm:
 
 	Level_BgmNotLZ4:
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
-		bne.s	Level_PlayBgm	; if not, branch
+		bne.s	Level_BgmTestGHZ3; if not, branch
 		moveq	#6,d0		; use 6th music (FZ)
+
+	Level_BgmTestGHZ3:
+		cmpi.w	#(id_GHZ<<8)+2,(v_zone).w ; is level GHZ3
+		bne.s	Level_PlayBgm	; if not, branch
+		moveq	#1,d0		; use 1st music (LZ)
 
 	Level_PlayBgm:
 		lea	(MusicList).l,a1 ; load	music playlist
