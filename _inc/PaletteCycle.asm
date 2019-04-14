@@ -37,7 +37,12 @@ PCycle_Title:
 ; ===========================================================================
 
 PCycle_GHZ:
+		cmpi.w	#2,(v_zone).w		; ghz3?
+		beq.s	@ghz3
 		lea	(Pal_GHZCyc).l,a0
+		bra.s	PCycGHZ_Go
+	@ghz3:
+		lea	(Pal_DarkGHZCyc).l,a0
 
 PCycGHZ_Go:
 		subq.w	#1,(v_pcyc_time).w ; decrement timer
