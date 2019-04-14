@@ -1963,6 +1963,7 @@ Pal_Title:	incbin	"palette\Title Screen.bin"
 Pal_LevelSel:	incbin	"palette\Level Select.bin"
 Pal_Sonic:	incbin	"palette\Sonic.bin"
 Pal_GHZ:	incbin	"palette\Green Hill Zone.bin"
+Pal_DarkGHZ:	incbin	"palette\DarkGHZ.bin"
 Pal_LZ:		incbin	"palette\Labyrinth Zone.bin"
 Pal_LZWater:	incbin	"palette\Labyrinth Zone Underwater.bin"
 Pal_MZ:		incbin	"palette\Marble Zone.bin"
@@ -5267,8 +5268,14 @@ LevelDataLoad:
 	@notSBZ3:
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2?
 		beq.s	@isSBZorFZ	; if yes, branch
+		cmpi.w	#(id_GHZ<<8)+2,(v_zone).w ; is level GHZ3?
+		beq.s	@isGHZ3		; if yes, branch
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
 		bne.s	@normalpal	; if not, branch
+
+	@isGHZ3:
+		moveq	#palid_DarkGHZ,d0
+		bra.s	@normalpal
 
 	@isSBZorFZ:
 		moveq	#palid_SBZ2,d0	; use SBZ2/FZ palette
