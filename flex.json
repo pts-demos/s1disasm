@@ -26,7 +26,12 @@
         },
         {
             "name": "beer",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "palette\\DarkGHZ.bin",
+                    "length": 3
+                }
+            ],
             "art": {
                 "path": "artnem\\beer.bin",
                 "compression": "Nemesis",
