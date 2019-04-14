@@ -25,8 +25,9 @@ with open('palette/Green Hill Zone.bin', 'rb') as ghz, open('palette/DarkGHZ.bin
     for n, val in enumerate(iter(lambda: ghz.read(2), b'')):
         # only modify:
         # - first 7 colors of palette line 3 (background; sky)
-        # - first color of palette line 1 (non-cycling background water)
-        if not ((n >= 0x20 and n < 0x27) or n == 0x10):
+        # - 1st & 9th-11th colors of palette line 1 (non-cycling background
+        # water)
+        if not ((n >= 0x20 and n < 0x27) or n == 0x10 or (n >= 0x18 and n < 0x1c)):
             dghz.write(val)
             continue
         r,g,b = darken(*torgb(val))
