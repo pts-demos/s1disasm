@@ -32,7 +32,7 @@ with open('palette/Green Hill Zone.bin', 'rb') as ghz, open('palette/DarkGHZ.bin
             continue
         r,g,b = darken(*torgb(val))
         # only make the water purple, not the sky
-        if (n == 0x10):
+        if (n == 0x10 or (n >= 0x18 and n < 0x1c)):
             r,g,b = makepurple(r,g,b)
         dghz.write(fromrgb(r,g,b))
 
