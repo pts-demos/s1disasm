@@ -1,6 +1,4 @@
 
-ptsDemo:	equ $80000	; Entrypoint for the demo
-
 PTS_Test:
 		sfx	bgm_Stop,0,1,1
 		move.w	#-1, d0
@@ -22,4 +20,4 @@ PTS_Test:
 		dbf	d0, @bl3
 		bsr.w	PaletteFadeOut
 		disable_ints
-		jmp ptsDemo
+		jmp PTSDemo
