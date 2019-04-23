@@ -1393,6 +1393,7 @@ QuickPLC:
 
 Pal_TitleCyc:	incbin	"palette\Cycle - Title Screen Water.bin"
 Pal_GHZCyc:	incbin	"palette\Cycle - GHZ.bin"
+Pal_DarkGHZCyc:	incbin	"palette\Cycle-DarkGHZ.bin"
 Pal_LZCyc1:	incbin	"palette\Cycle - LZ Waterfall.bin"
 Pal_LZCyc2:	incbin	"palette\Cycle - LZ Conveyor Belt.bin"
 Pal_LZCyc3:	incbin	"palette\Cycle - LZ Conveyor Belt Underwater.bin"
@@ -1994,6 +1995,7 @@ Pal_Title:	incbin	"palette\Title Screen.bin"
 Pal_LevelSel:	incbin	"palette\Level Select.bin"
 Pal_Sonic:	incbin	"palette\Sonic.bin"
 Pal_GHZ:	incbin	"palette\Green Hill Zone.bin"
+Pal_DarkGHZ:	incbin	"palette\DarkGHZ.bin"
 Pal_LZ:		incbin	"palette\Labyrinth Zone.bin"
 Pal_LZWater:	incbin	"palette\Labyrinth Zone Underwater.bin"
 Pal_MZ:		incbin	"palette\Marble Zone.bin"
@@ -2896,8 +2898,13 @@ Level_GetBgm:
 
 	Level_BgmNotLZ4:
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
-		bne.s	Level_PlayBgm	; if not, branch
+		bne.s	Level_BgmTestGHZ3; if not, branch
 		moveq	#6,d0		; use 6th music (FZ)
+
+	Level_BgmTestGHZ3:
+		cmpi.w	#(id_GHZ<<8)+2,(v_zone).w ; is level GHZ3
+		bne.s	Level_PlayBgm	; if not, branch
+		moveq	#1,d0		; use 1st music (LZ)
 
 	Level_PlayBgm:
 		lea	(MusicList).l,a1 ; load	music playlist
@@ -5305,8 +5312,14 @@ LevelDataLoad:
 	@notSBZ3:
 		cmpi.w	#(id_SBZ<<8)+1,(v_zone).w ; is level SBZ2?
 		beq.s	@isSBZorFZ	; if yes, branch
+		cmpi.w	#(id_GHZ<<8)+2,(v_zone).w ; is level GHZ3?
+		beq.s	@isGHZ3		; if yes, branch
 		cmpi.w	#(id_SBZ<<8)+2,(v_zone).w ; is level FZ?
 		bne.s	@normalpal	; if not, branch
+
+	@isGHZ3:
+		moveq	#palid_DarkGHZ,d0
+		bra.s	@normalpal
 
 	@isSBZorFZ:
 		moveq	#palid_SBZ2,d0	; use SBZ2/FZ palette
