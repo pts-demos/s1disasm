@@ -6,3 +6,5 @@ sonic.lst
 errors.txt
 s1built.bin
 s1built.prev.bin
+s1built.state
+full.bin

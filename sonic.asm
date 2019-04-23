@@ -24,6 +24,12 @@ ZoneCount:	equ 6	; discrete zones are: GHZ, MZ, SYZ, LZ, SLZ, and SBZ
 
 OptimiseSound:	equ 0	; change to 1 to optimise sound queuing
 
+ptsDebugMode:	equ 0   ; Activate the debug mode without entering the code
+ptsLevelSelect:	equ 0   ; Activate the level selection without entering the code
+ptsNoChecksum:	equ 1   ; Skip the checksum verification
+ptsTrapVector:  equ 1   ; Enable PTS trap vector used by PTS monitor to activate the demo
+ptsRingMonitor:	equ 1   ; Rings monitor will branch execution to PTS_Test for testing
+ptsSMonitor:	equ 1	; S (Soon to be PTS) monitor will branch execution to PTS_Test
 ; ===========================================================================
 
 StartOfRom:
@@ -64,7 +70,11 @@ Vectors:	dc.l v_systemstack&$FFFFFF	; Initial stack pointer value
 		dc.l ErrorTrap			; TRAP #02 exception
 		dc.l ErrorTrap			; TRAP #03 exception (36)
 		dc.l ErrorTrap			; TRAP #04 exception
+	if ptsTrapVector=1
+		dc.l ItsATrap			; TRAP #05 exception
+	else
 		dc.l ErrorTrap			; TRAP #05 exception
+	endc
 		dc.l ErrorTrap			; TRAP #06 exception
 		dc.l ErrorTrap			; TRAP #07 exception (40)
 		dc.l ErrorTrap			; TRAP #08 exception
@@ -303,7 +313,9 @@ CheckSumCheck:
 		bhs.s	@loop
 		movea.l	#Checksum,a1	; read the checksum
 		cmp.w	(a1),d1		; compare checksum in header to ROM
+	if ptsNoChecksum=0
 		bne.w	CheckSumError	; if they don't match, branch
+	endc
 
 	CheckSumOk:
 		lea	($FFFFFE00).w,a6
@@ -408,6 +420,12 @@ Trace:
 		move.b	#$10,(v_errortype).w
 		bra.s	loc_462
 
+	if ptsTrapVector=1
+ItsATrap:
+		move.b	#$16,(v_errortype).w
+		bra.s	loc_462
+	endc
+
 Line1010Emu:
 		move.b	#$12,(v_errortype).w
 		addq.l	#2,2(sp)
@@ -450,6 +468,7 @@ loc_478:
 		enable_ints
 		rte	
 
+
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
 
 
@@ -485,6 +504,9 @@ ErrorText:	dc.w @exception-ErrorText, @bus-ErrorText
 		dc.w @trapv-ErrorText, @privilege-ErrorText
 		dc.w @trace-ErrorText, @line1010-ErrorText
 		dc.w @line1111-ErrorText
+	if ptsTrapVector=1
+		dc.w  @ptsError-ErrorText
+	endc
 @exception:	dc.b "ERROR EXCEPTION    "
 @bus:		dc.b "BUS ERROR          "
 @address:	dc.b "ADDRESS ERROR      "
@@ -496,6 +518,9 @@ ErrorText:	dc.w @exception-ErrorText, @bus-ErrorText
 @trace:		dc.b "TRACE              "
 @line1010:	dc.b "LINE 1010 EMULATOR "
 @line1111:	dc.b "LINE 1111 EMULATOR "
+	if ptsTrapVector=1
+@ptsError:	dc.b "PTS PRESENTS       "
+	endc
 		even
 
 ; ||||||||||||||| S U B	R O U T	I N E |||||||||||||||||||||||||||||||||||||||
@@ -523,7 +548,7 @@ ShowErrorValue:
 		blo.s	@chars0to9
 		addq.w	#7,d1		; add 7 for characters A-F
 
-	@chars0to9:
+@chars0to9:
 		addi.w	#$7C0,d1
 		move.w	d1,(a6)
 		rts	
@@ -534,6 +559,12 @@ ShowErrorValue:
 
 
 ErrorWaitForC:
+	if ptsTrapVector=1
+		cmpi.b	#$16, (v_errortype).w
+		bne.w	ErrorWaitSkipEnd
+		rts
+ErrorWaitSkipEnd:
+	endc
 		bsr.w	ReadJoypads
 		cmpi.b	#btnC,(v_jpadpress1).w ; is button C pressed?
 		bne.w	ErrorWaitForC	; if not, branch
@@ -1999,6 +2030,9 @@ WaitForVBla:
 		include	"_incObj\sub CalcSine.asm"
 		include	"_incObj\sub CalcAngle.asm"
 
+
+		include "pts_test.asm"
+
 ; ---------------------------------------------------------------------------
 ; Sega screen
 ; ---------------------------------------------------------------------------
@@ -2298,8 +2332,10 @@ loc_3230:
 Tit_ChkLevSel:
 		;tst.b	(f_levselcheat).w ; check if level select code is on
 		;beq.w	PlayLevel	; if not, play level
+	if ptsLevelSelect=0
 		btst	#bitA,(v_jpadhold1).w ; check if A is pressed
 		beq.w	PlayLevel	; if not, play level
+	endc
 
 		moveq	#palid_LevelSel,d0
 		bsr.w	PalLoad2	; load level select palette
@@ -2899,10 +2935,12 @@ Level_TtlCardLoop:
 		move.b	#id_HUD,(v_objspace+$40).w ; load HUD object
 
 Level_ChkDebug:
+	if ptsDebugMode=0
 		tst.b	(f_debugcheat).w ; has debug cheat been entered?
 		beq.s	Level_ChkWater	; if not, branch
 		btst	#bitA,(v_jpadhold1).w ; is A button held?
 		beq.s	Level_ChkWater	; if not, branch
+	endc
 		move.b	#1,(f_debugmode).w ; enable debug mode
 
 Level_ChkWater:
