@@ -1,12 +1,22 @@
+ROMFILE=sonicus1.bin
+ASMFILE=sonic.asm
+# /k use ifeq, etc. directives, /p - Pure binary output
+# /o ae- assembler option for no automatic even on dc/dcb/ds/rs .w/l
+ASMFLAGS=/k /p /o ae-
 
+all: $(ROMFILE)
 
-all: s1built.bin
+.PHONY: $(ROMFILE)
+$(ROMFILE): $(ASMFILE)
+	wine asm68k $(ASMFLAGS) $(ASMFILE), $(ROMFILE)
+# Does the console check whether the rom integrity is checked?
+#	wine fixheadr.exe $(ROMFILE)
 
-.PHONY: s1built.bin
-s1built.bin: sonic.asm
-	wine asm68k /k /p /o ae- sonic.asm, s1built.bin
-	wine fixheadr.exe s1built.bin
+.PHONY: run-ra
+run-ra:
+	retroarch --libretro /usr/lib/x86_64-linux-gnu/libretro/genesis_plus_gx_libretro.so $(ROMFILE)
 
-.PHONY:
-run:
-	retroarch --libretro /usr/lib/x86_64-linux-gnu/libretro/genesis_plus_gx_libretro.so s1built.bin
+.PHONY: clean
+clean:
+	rm -f $(ROMFILE)
+
