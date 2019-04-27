@@ -1,0 +1,16 @@
+To generate a prerendered tileset from Blender
+
+* Set a Blender scene with the following settings
+    * background shading to transparency
+    * render reso to the size of one full sprite in the tileset
+    * render the animation as a sequence of RGBA PNGs
+* Use montage to combinet them
+    montage -background none *.png -geometry 80x80+0+0 -tile '16x' out.png
+* Open the image in gimp and go to Image -> Mode -> Indexed and choose < 16 as the num of colors
+* Save the image in res/sprites/something.png
+* Customize res/sprites.res
+    * The params are:
+    SPRITE default_cube_sprite "sprite/default_cube.png" 10 10 NONE 5
+           ^ variable name      ^ path to the image      ^ width and height in 8x8 tiles (ie 10 means 80 pixels)
+    The final 5 is for animation playback speed
+

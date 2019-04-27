@@ -9335,7 +9335,7 @@ SoundDriver:	include "s1.sounddriver.asm"
 ; PTS Demo is relocated to start at $90000
 ; If you need more memory change this also at demo/src/boot/sega.s
 		align $90000
-PTSDemo:	incbin "demo.bin"
+PTSDemo:	incbin "segademo\out\rom.bin"
 		even
 EndOfRom:
 		END

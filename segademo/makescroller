@@ -1,0 +1,15 @@
+#!/bin/sh -e
+
+exec >res/${1}.res
+
+trap "rm -f res/${1}.h res/${1}.res" EXIT
+
+rm -rf res/$1
+mkdir res/$1
+convert ${1}.png -crop 512x32 PNG8:res/${1}/%01d.png
+for f in res/${1}/*.png; do
+    n=$(basename $f .png)
+    echo "IMAGE ${1}_${n} \"${1}/${n}.png\" NONE"
+done
+
+trap '' EXIT
