@@ -1,13 +1,13 @@
 GENDEV=/opt/gendev
 export GENDEV
 .PHONY: clean all
-CLEANFILES=	src/crypto_pts_images.c
+CLEANFILES=	src/crypto_pts_images.c out/*
 
-all: out/rom.bin
+all: out/pts_demo.bin
 
 clean:
 	$(MAKE) -f $(GENDEV)/sgdk/mkfiles/makefile.gen clean
-	rm -f $(CLEANFILES)
+	rm -rf $(CLEANFILES)
 
 res/scroller.res: scroller.png
 	./makescroller scroller
@@ -18,6 +18,16 @@ res/gjtext.res: gjtext.png
 
 out/rom.bin: src/*.c src/crypto_pts_images.c res/scroller.res res/greets.res res/gjtext.res
 	$(MAKE) -f $(GENDEV)/sgdk/mkfiles/makefile.gen all
+
+out/pts_demo.bin: out/rom.bin
+	# This is the dirty hack solution.
+	# The correct way would be to change the section start point to 0x90000
+	# so that the generated image would start from correc location without
+	# manual cuttingi. However, it seems that changing this from the linker
+	# script screws up something else too.
+	split -b 589824 out/rom.bin
+	cat xab xac > out/pts_demo.bin
+	rm xaa xab xac
 
 src/crypto_pts_images.c: utils/cryptogen/cryptogen
 	utils/cryptogen/cryptogen > $@
