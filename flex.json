@@ -75,7 +75,12 @@
         },
         {
             "name": "modded_monitor",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "palette\\Sonic.bin",
+                    "length": 1
+                }
+            ],
             "art": {
                 "path": "artnem\\Monitors.bin",
                 "compression": "Nemesis"
