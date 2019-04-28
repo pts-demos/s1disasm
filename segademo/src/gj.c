@@ -5,6 +5,7 @@
 #include "gj.h"
 #include "gjtext.h"
 #include "gjlocfi.h"
+#include "gjlocpl.h"
 
 extern u16 rgbToU16(u8 r, u8 g, u8 b);
 
@@ -52,6 +53,9 @@ gj_init(void)
 	VDP_drawImageEx(PLAN_B, &gjlocfi_0,
 	    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
 	    0, 0, TRUE, TRUE);
+	VDP_drawImageEx(PLAN_B, &gjlocpl_0,
+	    TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 672),
+	    0, 4, TRUE, TRUE);
 }
 
 void
