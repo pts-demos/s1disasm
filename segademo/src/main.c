@@ -46,6 +46,7 @@ joy_cb(u16 joy, u16 changed, u16 state)
 int
 main(void)
 {
+	VDP_resetScreen();
 	VDP_setScreenHeight240();
 	PSG_init();
 	JOY_init();
