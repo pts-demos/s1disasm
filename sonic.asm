@@ -2087,7 +2087,8 @@ GM_Sega:
 
 Sega_GotoTitle:
 	if ptsDemoOnly=1
-		bsr.w	PTS_Test
+		disable_ints
+		jmp	PTSDemo
 	endc
 		move.b	#id_Title,(v_gamemode).w ; go to title screen
 		rts
