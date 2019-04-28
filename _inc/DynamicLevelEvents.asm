@@ -155,7 +155,6 @@ loc_6EB0:
 		move.w	#$280,obY(a1)
 
 loc_6ED0:
-		music	bgm_Boss,0,1,0	; play boss music
 		move.b	#1,(f_lockscreen).w ; lock screen
 		addq.b	#2,(v_dle_routine).w
 		moveq	#plcid_Boss,d0
