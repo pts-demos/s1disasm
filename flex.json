@@ -53,7 +53,12 @@
         },
         {
             "name": "GHZ Giant Ball",
-            "palettes": [],
+            "palettes": [
+                {
+                    "path": "palette\\DarkGHZ.bin",
+                    "length": 3
+                }
+            ],
             "art": {
                 "path": "artnem\\GHZ Giant Ball.bin",
                 "compression": "Nemesis"
