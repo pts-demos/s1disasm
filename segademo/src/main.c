@@ -49,6 +49,8 @@ main(void)
 	VDP_setScreenHeight240();
 	PSG_init();
 	JOY_init();
+	SND_startPlay_VGM(polttaribiisi);
+
 #if 0
 	JOY_setEventHandler(joy_cb);
 #endif
