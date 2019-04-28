@@ -11,8 +11,10 @@ clean:
 
 res/gjtext.res: gjtext.png
 	./makescroller gjtext
+res/gjlocfi.res: gjlocfi.png
+	./makescroller gjlocfi
 
-out/rom.bin: src/*.c res/gjtext.res
+out/rom.bin: src/*.c res/gjtext.res res/gjlocfi.res
 	$(MAKE) -f $(GENDEV)/sgdk/mkfiles/makefile.gen all
 
 out/pts_demo.bin: out/rom.bin

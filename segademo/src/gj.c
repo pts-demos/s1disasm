@@ -4,6 +4,7 @@
 #include "prerendered_cube.h"
 #include "gj.h"
 #include "gjtext.h"
+#include "gjlocfi.h"
 
 extern u16 rgbToU16(u8 r, u8 g, u8 b);
 
@@ -35,7 +36,7 @@ load_next_image(void)
 	u16 tileidx = TILE_USERINDEX + (img % 2) * 256;
 	if (scrolltext[img] != &blank)
 		VDP_drawImageEx(PLAN_A, scrolltext[img],
-		    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, tileidx),
+		    TILE_ATTR_FULL(PAL1, 0, FALSE, FALSE, tileidx),
 		    xpos, 15, TRUE, TRUE);
 	img++;
 }
@@ -47,12 +48,17 @@ gj_init(void)
 	VDP_setPlanSize(128, 64);
 	VDP_setHorizontalScroll(PLAN_A, VDP_getScreenWidth());
 	load_next_image();
+
+	VDP_drawImageEx(PLAN_B, &gjlocfi_0,
+	    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
+	    0, 0, TRUE, TRUE);
 }
 
 void
 gj(void) {
 	static s16 msg_scrolloffset = 0;
 	static u16 vsin_idx = 0;
+	static u16 planb_scroll = 0;
 
 	msg_scrolloffset += 2;
 	if (msg_scrolloffset % 512 == 0)
@@ -60,6 +66,9 @@ gj(void) {
 	VDP_setHorizontalScroll(PLAN_A, VDP_getScreenWidth()-msg_scrolloffset);
 	vsin_idx = (vsin_idx + 1) % VSIN_MAX;
 	VDP_setVerticalScroll(PLAN_A, -70 + greets_vsin[vsin_idx]);
+	planb_scroll += 2;
+	VDP_setVerticalScroll(PLAN_B, planb_scroll);
+	VDP_setHorizontalScroll(PLAN_B, -80 + greets_vsin[vsin_idx]);
 	VDP_waitVSync();
 }
 
