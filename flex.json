@@ -50,6 +50,28 @@
                 "customDefinition": "",
                 "label": ""
             }
+        },
+        {
+            "name": "GHZ Giant Ball",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\GHZ Giant Ball.bin",
+                "compression": "Nemesis"
+            },
+            "mappings": {
+                "path": "_maps\\GHZ Ball.asm",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": "",
+                "accessor": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": ""
+            }
         }
     ]
 }
