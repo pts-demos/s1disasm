@@ -30,6 +30,7 @@ ptsNoChecksum:	equ 1   ; Skip the checksum verification
 ptsTrapVector:  equ 1   ; Enable PTS trap vector used by PTS monitor to activate the demo
 ptsRingMonitor:	equ 1   ; Rings monitor will branch execution to PTS_Test for testing
 ptsSMonitor:	equ 1	; S (Soon to be PTS) monitor will branch execution to PTS_Test
+ptsDemoOnly:	equ 0	; Branch to PTS_Test immediately instead of starting game
 ; ===========================================================================
 
 StartOfRom:
@@ -2085,6 +2086,9 @@ GM_Sega:
 		move.w	d0,(vdp_control_port).l
 
 Sega_GotoTitle:
+	if ptsDemoOnly=1
+		bsr.w	PTS_Test
+	endc
 		move.b	#id_Title,(v_gamemode).w ; go to title screen
 		rts
 
