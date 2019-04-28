@@ -72,6 +72,27 @@
                 "customDefinition": "",
                 "label": ""
             }
+        },
+        {
+            "name": "modded_monitor",
+            "palettes": [],
+            "art": {
+                "path": "artnem\\Monitors.bin",
+                "compression": "Nemesis"
+            },
+            "mappings": {
+                "path": "_maps\\Monitor.asm",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": ""
+            },
+            "dplcs": {
+                "enabled": false,
+                "path": "",
+                "format": "Sonic 1",
+                "customDefinition": "",
+                "label": ""
+            }
         }
     ]
 }
