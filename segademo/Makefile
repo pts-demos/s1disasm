@@ -1,7 +1,7 @@
 GENDEV=/opt/gendev
 export GENDEV
 .PHONY: clean all
-CLEANFILES=	out/*
+CLEANFILES=	out/* res/gj*
 
 all: out/pts_demo.bin
 

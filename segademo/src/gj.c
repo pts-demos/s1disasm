@@ -20,10 +20,6 @@ static const Image *scrolltext[] = {
 	&gjtext_1,
 	&gjtext_2,
 	&gjtext_3,
-	&gjtext_4,
-	&gjtext_5,
-	&gjtext_6,
-	&gjtext_7,
 	NULL,
 };
 static unsigned img = 0;
