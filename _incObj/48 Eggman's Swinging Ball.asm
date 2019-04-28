@@ -55,7 +55,7 @@ loc_17B60:
 GBall_MakeBall:
 		move.b	#8,obRoutine(a1)
 		move.l	#Map_GBall,obMap(a1) ; load different mappings for final link
-		move.w	#$43AA,obGfx(a1) ; use different graphics
+		move.w	#$03AA,obGfx(a1) ; use different graphics
 		move.b	#1,obFrame(a1)
 		move.b	#5,obPriority(a1)
 		move.b	#$81,obColType(a1) ; make object hurt Sonic
