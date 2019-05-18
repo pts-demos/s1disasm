@@ -22,6 +22,8 @@ static const Image *scrolltext[] = {
 	&gjtext_1,
 	&gjtext_2,
 	&gjtext_3,
+	&blank,
+	&blank,
 	NULL,
 };
 static unsigned img = 0;
@@ -29,11 +31,11 @@ static unsigned img = 0;
 static void
 load_next_image(void)
 {
+	if (scrolltext[img] == NULL)
+		img = 0;
 	/* draw at either 0 or 64 tiles (512px) */
 	u16 xpos = (img % 2) * 64;
 	VDP_clearTileMapRect(PLAN_A, xpos, 15, 64, 4);
-	if (scrolltext[img] == NULL)
-		return;
 	u16 tileidx = TILE_USERINDEX + (img % 2) * 256;
 	if (scrolltext[img] != &blank)
 		VDP_drawImageEx(PLAN_A, scrolltext[img],
@@ -52,27 +54,25 @@ gj_init(void)
 
 	VDP_drawImageEx(PLAN_B, &gjlocfi_0,
 	    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
-	    0, 0, TRUE, TRUE);
+	    0, -48, TRUE, TRUE);
 	VDP_drawImageEx(PLAN_B, &gjlocpl_0,
 	    TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 672),
-	    0, 4, TRUE, TRUE);
+	    0, 28, TRUE, TRUE);
+	VDP_setVerticalScroll(PLAN_B, -48);
 }
 
 void
 gj(void) {
 	static s16 msg_scrolloffset = 0;
 	static u16 vsin_idx = 0;
-	static u16 planb_scroll = 0;
 
 	msg_scrolloffset += 2;
 	if (msg_scrolloffset % 512 == 0)
 		load_next_image();
+
 	VDP_setHorizontalScroll(PLAN_A, VDP_getScreenWidth()-msg_scrolloffset);
 	vsin_idx = (vsin_idx + 1) % VSIN_MAX;
 	VDP_setVerticalScroll(PLAN_A, -70 + greets_vsin[vsin_idx]);
-	planb_scroll += 2;
-	VDP_setVerticalScroll(PLAN_B, planb_scroll);
 	VDP_setHorizontalScroll(PLAN_B, -80 + greets_vsin[vsin_idx]);
 	VDP_waitVSync();
 }
-
