@@ -28,7 +28,7 @@ ptsDebugMode:	equ 0   ; Activate the debug mode without entering the code
 ptsLevelSelect:	equ 0   ; Activate the level selection without entering the code
 ptsNoChecksum:	equ 1   ; Skip the checksum verification
 ptsTrapVector:  equ 1   ; Enable PTS trap vector used by PTS monitor to activate the demo
-ptsRingMonitor:	equ 1   ; Rings monitor will branch execution to PTS_Test for testing
+ptsRingMonitor:	equ 0   ; Rings monitor will branch execution to PTS_Test for testing
 ptsSMonitor:	equ 1	; S (Soon to be PTS) monitor will branch execution to PTS_Test
 ptsDemoOnly:	equ 0	; Branch to PTS_Test immediately instead of starting game
 ; ===========================================================================
