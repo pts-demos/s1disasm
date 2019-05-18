@@ -2337,11 +2337,8 @@ loc_3230:
 		beq.w	Tit_MainLoop	; if not, branch
 
 Tit_ChkLevSel:
-		;tst.b	(f_levselcheat).w ; check if level select code is on
-		;beq.w	PlayLevel	; if not, play level
 	if ptsLevelSelect=0
-		btst	#bitA,(v_jpadhold1).w ; check if A is pressed
-		beq.w	PlayLevel	; if not, play level
+		bra.w	PlayLevel	; if not, play level
 	endc
 
 		moveq	#palid_LevelSel,d0
