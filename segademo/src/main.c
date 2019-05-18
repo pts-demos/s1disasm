@@ -27,10 +27,8 @@ void black_init() {
 }
 
 struct effect effects[] = {
-	/* render func, init func, transition, duration (sec) */
-	{ gj, gj_init, clear_screen, 4700 },
-	{ black, black_init, clear_screen, 100 },
-	{ end, NULL, clear_screen, 0 },
+	/* render func, init func, transition, duration */
+	{ gj, gj_init, clear_screen, 0 },
 	{ NULL, NULL, NULL, 0 },
 };
 
