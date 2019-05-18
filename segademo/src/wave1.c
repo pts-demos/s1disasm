@@ -23,8 +23,6 @@
 
 u32* wave_tilebuffer = NULL;
 extern u16 rgbToU16(u8 r, u8 g, u8 b);
-u16 wave_scroll = 10;
-
 // distance to the screen center point
 u16 distance_x = 0;
 u16 distance_y = 0;
@@ -37,6 +35,11 @@ u8* wave1_sin_wave_data;
 u16 wave1_sin_wave_count;
 u8* wave1_sin_time_data;
 u16 wave1_sin_time_count;
+
+u8 wave1_r = 0;
+u8 wave1_g = 0;
+u8 wave1_b = 0;
+u16 wave1_palettes[17];
 
 void wave1_fade(void) {
     MEM_free(wave_tilebuffer);
@@ -61,29 +64,24 @@ wave1_init(void)
 		rowsInTile * sizeof(u32));
 
     VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-    u16 palettes[17];
-
-    u8 r = 0;
-    u8 g = 0;
-    u8 b = 0;
 
     // Create a gradient color palette
     for (int i = 1; i < 16; i++)
     {
-        r += 1;
-        if (r > 7) {
-            r = 7;
-            g++;
-            if (g > 7) {
-                g = 7;
-                b++;
-                if (b > 6) {
-                    b = 7;
+        wave1_r += 1;
+        if (wave1_r > 7) {
+            wave1_r = 7;
+            wave1_g++;
+            if (wave1_g > 7) {
+                wave1_g = 7;
+                wave1_b++;
+                if (wave1_b > 6) {
+                    wave1_b = 7;
                 }
             }
         }
-        palettes[i] = rgbToU16(r, g, b);
-        VDP_setPaletteColor(i, palettes[i]);
+        wave1_palettes[i] = rgbToU16(wave1_r, wave1_g, wave1_b);
+        VDP_setPaletteColor(i, wave1_palettes[i]);
     }
 
 	wave1_sin_wave_data = get_sin_wave_ptr();
@@ -133,31 +131,8 @@ wave1_init(void)
 }
 
 void
-wave1_switch_palette()
+wave1_update_palette()
 {
-    u16 palettes[17];
-
-    u8 r = 0;
-    u8 g = 0;
-    u8 b = 0;
-
-    for (int i = 1; i < 16; i++)
-    {
-        b += 1;
-        if (b > 7) {
-            b = 7;
-            g++;
-            if (g > 7) {
-                g = 7;
-                r++;
-                if (r > 6) {
-                    r = 7;
-                }
-            }
-        }
-        palettes[i] = rgbToU16(r, g, b);
-        VDP_setPaletteColor(i, palettes[i]);
-    }
 }
 
 void
@@ -171,69 +146,33 @@ wave1_nosync(void)
     counter++;
 	counter = counter % wave1_sin_time_count;
 
-    wave_scroll += 1;
     sin_time = wave1_sin_time_data[counter];
 	static u32 loops = 0;
 	loops++;
-	static u8 effect = 1;
-	if (loops == 70) {
-		effect = 2;
-		wave1_switch_palette();
-	}
 
+	u16 add_y = sin_time<<1;
+	u16 add_x = loops<<1;
 	// As the wave pattern is drawn in the center of screen, we only need to
 	// calculate one quarter of the screen - the rest can be duplicated to the
 	// other quarters
+
+	wave1_update_palette();
 
     for (u32 y = line_to_draw; y < screenTileHeightQuarter; y++)
     {
 		// multiply by 8
         pixel_y = y << 3;
-        distance_y = abs(screenPixelHalfY - pixel_y) + sin_time;
+        distance_y = abs(screenPixelHalfY - pixel_y - sin_time + add_y) + loops;
 
         for (u32 x = 0; x < screenTileWidthQuarter; x++)
         {
-            // to get a moving sine wave at pixel (x,y), the following equation
-            // can be used:
-            // intensity = |sin(1 / (sqrt( (i*sin(t))^2 + (j*sin(t))^2)))|
-            // where
-            // 	i, j: the pixel coordinates [0, 1]
-            //	t: time
-            //  sin: sine function returning [-1, 1]
-            //
-            // If the equation is reduced to:
-            //   intensity = sqrt(i^2 + j^2)
-            // A circular gradient is produced
-            // Adding sine and scaling terms produces a cyclic wave pattern
-            // 
-            // this needs to be adapted to:
-            // 1. Work without floats (implement sqrt or avoid sqrt in the first place)
-            // 2. Work without real-time sine (use look-up table)
-
 			/// multiply by 8
             pixel_x = x << 3;
-            distance_x = abs(screenPixelHalfX - pixel_x) + sin_time;
-			if (effect == 1) {
-				distance = silly_sqrt((distance_x*distance_x) + (distance_y*distance_y));
-			} else {
-				distance = silly_sqrt((distance_x * distance_x)
-				    & (distance_y * distance_y)) << 1;
-			}
+
+            distance_x = abs(screenPixelHalfX - pixel_x - sin_time + add_x) + sin_time + loops;
+			distance = ((distance_x*distance_x) + (distance_y*distance_y)) >> 7;
 			distance = distance % wave1_sin_wave_count;
 
-
-            // The distance we work with are [0,160] (half screen width at maximum, height is less and doesn't really matter)
-            // To add the time component (the sin inside the sin) we pre-compute a sin table that contains values from 0 to 160
-            // Then we add the pixel's distance to the center [0,160] and the sin [0,160] together to get [0,320]
-            // Now, assuming we have a look-up table of size 320 we can look up the sine values for each distance
-
-            // assuming there are 8 different red color channels,
-            // we can split the 160 different distances to 8 gradient ranges
-            // 160 / 8 == 20
-            // So a distance of 20 pixels changes the color palette
-            // Let's say at the center of the screen red channel is 0 and at the edges it is 7
-            // Calculate what color palette to use at a specific distance to the screen center
-            //channel_index = distance / 20;
             channel_index = wave1_sin_wave_data[distance];
             arrIndex = (y * screenTileWidth + x) * rowsInTile;
 
@@ -244,17 +183,18 @@ wave1_nosync(void)
                 channel_index = 15;
 
             u32 all_chans = 0;
-            all_chans += (channel_index << 28)
-                + (channel_index << 24)
-                + (channel_index << 20)
-                + (channel_index << 16)
-                + (channel_index << 12)
-                + (channel_index << 8)
-                + (channel_index << 4)
-                + (channel_index);
+            all_chans += (channel_index << 28);
+            all_chans += (channel_index << 24);
+            all_chans += (channel_index << 20);
+            all_chans += (channel_index << 16);
+            all_chans += (channel_index << 12);
+            all_chans += (channel_index << 8);
+            all_chans += (channel_index << 4);
+            all_chans += (channel_index);
 
-            for (u32 p = 0; p < 8; p++)
+            for (u32 p = 0; p < 8; p++) {
                 wave_tilebuffer[arrIndex + p] = all_chans;
+			}
         }
     }
 
