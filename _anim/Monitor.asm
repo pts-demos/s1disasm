@@ -3,7 +3,7 @@
 ; ---------------------------------------------------------------------------
 Ani_Monitor:	dc.w @static-Ani_Monitor, @eggman-Ani_Monitor, @sonic-Ani_Monitor
 		dc.w @shoes-Ani_Monitor, @shield-Ani_Monitor, @invincible-Ani_Monitor
-		dc.w @rings-Ani_Monitor, @s-Ani_Monitor
+		dc.w @rings-Ani_Monitor, @s-Ani_Monitor, @goggles-Ani_Monitor
 		dc.w @breaking-Ani_Monitor
 @static:	dc.b 1,	0, 1, 2, afEnd
 		even
@@ -20,6 +20,8 @@ Ani_Monitor:	dc.w @static-Ani_Monitor, @eggman-Ani_Monitor, @sonic-Ani_Monitor
 @rings:		dc.b 1,	0, 8, 8, 1, 8, 8, 2, 8,	8, afEnd
 		even
 @s:		dc.b 1,	0, 9, 9, 1, 9, 9, 2, 9,	9, afEnd
+		even
+@goggles:	dc.b 1,	0, $A, $A, 1, $A, $A, 2, $A, $A, afEnd
 		even
 @breaking:	dc.b 2,	0, 1, 2, $B, afBack, 1
 		even
