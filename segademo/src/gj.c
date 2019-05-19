@@ -54,25 +54,25 @@ gj_init(void)
 	wave1_init();
 
 	VDP_setScrollingMode(HSCROLL_PLANE, VSCROLL_PLANE);
-	//VDP_setPlanSize(128, 64);
+	VDP_setPlanSize(128, 64);
 	VDP_setHorizontalScroll(PLAN_A, VDP_getScreenWidth());
 	load_next_image();
 
-	VDP_drawImageEx(PLAN_A, &gjlocfi_0,
-	    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
-	    0, -48, TRUE, TRUE);
-	VDP_drawImageEx(PLAN_A, &gjlocpl_0,
-	    TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 672),
-	    0, 28, TRUE, TRUE);
-	VDP_setVerticalScroll(PLAN_A, -48);
+	//VDP_drawImageEx(PLAN_B, &gjlocfi_0,
+	//    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
+	//    0, -48, TRUE, TRUE);
+	//VDP_drawImageEx(PLAN_B, &gjlocpl_0,
+	//    TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 672),
+	//    0, 28, TRUE, TRUE);
+	//VDP_setVerticalScroll(PLAN_B, -48);
 }
 
 void
 gj(void) {
-
 	static s16 msg_scrolloffset = 0;
 	static u16 vsin_idx = 0;
 	static u16 hsin_idx = 0;
+
 	wave1();
 
 	msg_scrolloffset += 2;
@@ -83,7 +83,6 @@ gj(void) {
 	vsin_idx = (vsin_idx + 1) % VSIN_MAX;
 	hsin_idx = (hsin_idx + 1) % HSIN_MAX;
 	VDP_setVerticalScroll(PLAN_A, -70 + greets_vsin[vsin_idx]);
-	VDP_setHorizontalScroll(PLAN_A, -80 + greets_hsin[hsin_idx]);
-
+	//VDP_setHorizontalScroll(PLAN_B, -80 + greets_hsin[hsin_idx]);
 	VDP_waitVSync();
 }
