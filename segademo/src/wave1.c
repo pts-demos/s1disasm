@@ -172,9 +172,9 @@ wave1_nosync(void)
 	} else if (loop_counter > 300 && loop_counter < 400) {
 		// next n, reverse
 		loops = 400 - loop_counter;
-	} else if (loops > 400 & loops < 500) {
+	} else if (loops > 400 && loops < 500) {
 		loops = loop_counter - 400;
-	} else if (loops > 500 & loops < 600) {
+	} else if (loops > 500 && loops < 600) {
 		loops = 600 - loop_counter;
 	}
 
