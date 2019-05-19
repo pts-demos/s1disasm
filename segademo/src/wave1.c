@@ -25,6 +25,7 @@
 
 #define TILE_OFFSET TILE_USERINDEX + 512
 
+u32 loop_counter = 0;
 u8 effect = 0;
 u16 loops = 0;
 u32* wave_tilebuffer = NULL;
@@ -145,7 +146,6 @@ wave1_nosync(void)
 	counter = counter % wave1_sin_time_count;
 
     sin_time = wave1_sin_time_data[counter];
-	static u32 loop_counter = 0;
 	loop_counter++;
 
 	s16 add_y = sin_time<<1;
@@ -156,20 +156,18 @@ wave1_nosync(void)
 		// first n frames, normal effect
 		loops++;
 	}
-	else if (loop_counter > 100 && loop_counter < 200) {
+	else if (loop_counter > 100 && loop_counter <= 200) {
 		// next n, reverse effect
 		loops = 200 - loop_counter;
-	} else if (loop_counter > 200 && loop_counter < 300) {
+	} else if (loop_counter > 200 && loop_counter <= 300) {
 		// next n, new effect
 		effect = 1;
 		loops = loop_counter - 200;
-	} else if (loop_counter > 300 && loop_counter < 400) {
+	} else if (loop_counter > 300 && loop_counter <= 400) {
 		// next n, reverse
 		loops = 400 - loop_counter;
-	} else if (loops > 400 && loops < 500) {
-		loops = loop_counter - 400;
-	} else if (loops > 500 && loops < 600) {
-		loops = 600 - loop_counter;
+	} else if (loop_counter > 400) {
+		loop_counter = 0;
 	}
 
 	// As the wave pattern is drawn in the center of screen, we only need to
