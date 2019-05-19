@@ -21,13 +21,15 @@
 #define screenPixelHalfX (screenPixelWidth / 2)
 #define screenPixelHalfY (screenPixelHeight / 2)
 
+u8 effect = 0;
+u16 loops = 0;
 u32* wave_tilebuffer = NULL;
 extern u16 rgbToU16(u8 r, u8 g, u8 b);
 // distance to the screen center point
 u16 distance_x = 0;
 u16 distance_y = 0;
-u16 pixel_x = 0;
-u16 pixel_y = 0;
+s16 pixel_x = 0;
+s16 pixel_y = 0;
 u8 channel_index = 0;
 u32 arrIndex = 0;
 u16 distance = 0;
@@ -125,7 +127,7 @@ wave1_init(void)
 			}
 			tileIndex += 1;
 
-			VDP_fillTileMapRect(PLAN_A, tileIndex, tile_x, tile_y, 1, 1);
+			VDP_fillTileMapRect(PLAN_B, tileIndex, tile_x, tile_y, 1, 1);
 		}
 	}
 }
@@ -147,31 +149,66 @@ wave1_nosync(void)
 	counter = counter % wave1_sin_time_count;
 
     sin_time = wave1_sin_time_data[counter];
-	static u32 loops = 0;
-	loops++;
+	static u32 loop_counter = 0;
+	loop_counter++;
 
-	u16 add_y = sin_time<<1;
-	u16 add_x = loops<<1;
+	s16 add_y = sin_time<<1;
+	s16 add_x = loops<<1;
+
+	wave1_update_palette();
+
+	// vary pattern over time
+	if (loop_counter < 100) {
+		// first n frames, normal effect
+		loops++;
+	}
+	else if (loop_counter > 100 && loop_counter < 200) {
+		// next n, reverse effect
+		loops = 200 - loop_counter;
+	} else if (loop_counter > 200 && loop_counter < 300) {
+		// next n, new effect
+		effect = 1;
+		loops = loop_counter - 200;
+	} else if (loop_counter > 300 && loop_counter < 400) {
+		// next n, reverse
+		loops = 400 - loop_counter;
+	} else if (loops > 400 & loops < 500) {
+		loops = loop_counter - 400;
+	} else if (loops > 500 & loops < 600) {
+		loops = 600 - loop_counter;
+	}
+
 	// As the wave pattern is drawn in the center of screen, we only need to
 	// calculate one quarter of the screen - the rest can be duplicated to the
 	// other quarters
-
-	wave1_update_palette();
 
     for (u32 y = line_to_draw; y < screenTileHeightQuarter; y++)
     {
 		// multiply by 8
         pixel_y = y << 3;
-        distance_y = abs(screenPixelHalfY - pixel_y - sin_time + add_y) + loops;
+		if (effect == 0) {
+			distance_y = abs(screenPixelHalfY - pixel_y - sin_time + add_y) + loops;
+		} else {
+			distance_y = abs(screenPixelHalfY - pixel_y - sin_time + add_y) + loops;
+		}
 
         for (u32 x = 0; x < screenTileWidthQuarter; x++)
         {
 			/// multiply by 8
             pixel_x = x << 3;
 
-            distance_x = abs(screenPixelHalfX - pixel_x - sin_time + add_x) + sin_time + loops;
-			distance = ((distance_x*distance_x) + (distance_y*distance_y)) >> 7;
-			distance = distance % wave1_sin_wave_count;
+			if (effect == 0) {
+				if (pixel_x % 4 == 0) {
+					add_x++;
+				}
+				distance_x = abs(screenPixelHalfX - pixel_x - sin_time + add_x);
+				distance = ((distance_x*distance_x) + (distance_y*distance_y)) >> 8;
+				distance = distance % wave1_sin_wave_count;
+			} else {
+				distance_x = abs(screenPixelHalfX - pixel_x - sin_time + add_x + loops);
+				distance = ((distance_x*distance_x) + (distance_y*distance_y)) >> 7;
+				distance = distance % wave1_sin_wave_count;
+			}
 
             channel_index = wave1_sin_wave_data[distance];
             arrIndex = (y * screenTileWidth + x) * rowsInTile;
@@ -218,6 +255,5 @@ void
 wave1(void)
 {
 	wave1_nosync();
-	VDP_waitVSync();
 }
 
