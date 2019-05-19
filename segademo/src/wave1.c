@@ -23,7 +23,7 @@
 #define screenPixelHalfX (screenPixelWidth / 2)
 #define screenPixelHalfY (screenPixelHeight / 2)
 
-#define TILE_OFFSET 512
+#define TILE_OFFSET TILE_USERINDEX + 512
 
 u8 effect = 0;
 u16 loops = 0;

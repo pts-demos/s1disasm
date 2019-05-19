@@ -39,12 +39,27 @@ load_next_image(void)
 		img = 0;
 	/* draw at either 0 or 64 tiles (512px) */
 	u16 xpos = (img % 2) * 64;
-	VDP_clearTileMapRect(PLAN_A, xpos, 15, 64, 4);
+
+	VDP_clearTileMapRect(PLAN_A, xpos, 10, 64, 4);
+	VDP_clearTileMapRect(PLAN_A, xpos+5, 15, 64, 4);
+	VDP_clearTileMapRect(PLAN_A, xpos+15, 20, 64, 4);
+
 	u16 tileidx = TILE_USERINDEX + (img % 2) * 256;
-	if (scrolltext[img] != &blank)
+
+	if (scrolltext[img] != &blank) {
 		VDP_drawImageEx(PLAN_A, scrolltext[img],
 		    TILE_ATTR_FULL(PAL1, 0, FALSE, FALSE, tileidx),
-		    xpos, 15, TRUE, TRUE);
+		    xpos, 10, TRUE, TRUE);
+	}
+
+	VDP_drawImageEx(PLAN_A, &gjlocfi_0,
+		TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 1024),
+		xpos+5, 15, TRUE, TRUE);
+
+	VDP_drawImageEx(PLAN_A, &gjlocpl_0,
+		TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 1200),
+		xpos+15, 20, TRUE, TRUE);
+
 	img++;
 }
 
@@ -57,14 +72,6 @@ gj_init(void)
 	VDP_setPlanSize(128, 64);
 	VDP_setHorizontalScroll(PLAN_A, VDP_getScreenWidth());
 	load_next_image();
-
-	//VDP_drawImageEx(PLAN_B, &gjlocfi_0,
-	//    TILE_ATTR_FULL(PAL2, 0, FALSE, FALSE, TILE_USERINDEX + 512),
-	//    0, -48, TRUE, TRUE);
-	//VDP_drawImageEx(PLAN_B, &gjlocpl_0,
-	//    TILE_ATTR_FULL(PAL3, 0, FALSE, FALSE, TILE_USERINDEX + 672),
-	//    0, 28, TRUE, TRUE);
-	//VDP_setVerticalScroll(PLAN_B, -48);
 }
 
 void
@@ -83,6 +90,5 @@ gj(void) {
 	vsin_idx = (vsin_idx + 1) % VSIN_MAX;
 	hsin_idx = (hsin_idx + 1) % HSIN_MAX;
 	VDP_setVerticalScroll(PLAN_A, -70 + greets_vsin[vsin_idx]);
-	//VDP_setHorizontalScroll(PLAN_B, -80 + greets_hsin[hsin_idx]);
 	VDP_waitVSync();
 }
