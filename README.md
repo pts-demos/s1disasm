@@ -14,3 +14,10 @@ This is a romhack created for a bachelor party. It features some custom level de
 * `make`
 * `make run-ra`
 
+### Credits
+
+* Everyone in Sonic romhacking community who had already done all the hard work
+* Gekko: code, graphics, levels, music, overwriting VRAM
+* lotheac: code, graphics, levels, hardware, not overwriting VRAM
+* owb: code, figuring out the hack to jump into the demo
+
