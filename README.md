@@ -1,11 +1,16 @@
-s1disasm_git
-============
+Sonic 1 romhack, based on https://github.com/sonicretro/s1disasm
 
-The very latest Sonic 1 Disassembly.
+### Description
 
-See: http://info.sonicretro.org/Disassemblies
+This is a romhack created for a bachelor party. It features some custom level design, a different boss fight in GHZ3, some music and a invtro played after marble zone 1.
 
-DISCLAIMER:
-Any and all content presented in this repository is presented for informational and educational purposes only.
-Commercial usage is expressly prohibited. Sonic Retro claims no ownership of any code in these repositories.
-You assume any and all responsibility for using this content responsibly. Sonic Retro claims no responsibiliy or warranty.
+### Compiling
+
+* Currently Linux only
+* Install gendev: https://github.com/kubilus1/gendev
+	* Make sure gendev required environment variables are set
+* Install wine
+* Install retroarch with Sega Megadrive libraries
+* `make`
+* `make run-ra`
+
