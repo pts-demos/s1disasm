@@ -4,6 +4,10 @@ Sonic 1 romhack, based on https://github.com/sonicretro/s1disasm
 
 This is a romhack created for a bachelor party. It features some custom level design, a different boss fight in GHZ3, some music and a invtro played after marble zone 1.
 
+### Links
+
+[Download](https://github.com/pts-demos/s1disasm/releases/download/1.0/sonicus1.bin)
+
 ### Compiling
 
 * Currently Linux only
